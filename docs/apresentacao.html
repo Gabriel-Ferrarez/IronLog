@@ -1,0 +1,332 @@
+<title>IronLog</title>
+<style>
+  /* IronLog — página de apresentação. Design "tela de academia":
+     fundo escuro, acento verde-limão neon. Tema único, pintado explicitamente. */
+  :root {
+    --ground: #0E0F13;
+    --surface: #171A21;
+    --surface-2: #20242E;
+    --line: #2A2F3A;
+    --lime: #C8FF3D;
+    --orange: #FF6B3D;
+    --green: #7CE38B;
+    --text: #EDEFF3;
+    --muted: #9AA0AD;
+    --ink: #10130A;
+    --maxw: 1080px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(200,255,61,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(255,107,61,.08), transparent 55%),
+      var(--ground);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 800; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--lime);
+  }
+  h1, h2, h3 { text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* HERO */
+  header.hero { padding: 68px 0 40px; }
+  .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .logo {
+    width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--lime); color: var(--ink); font-size: 22px; font-weight: 900;
+    box-shadow: 0 0 30px rgba(200,255,61,.35);
+  }
+  .brand b { font-weight: 900; font-size: 20px; letter-spacing: -0.01em; }
+  h1.title {
+    font-size: clamp(40px, 8vw, 82px); font-weight: 900; line-height: .98;
+    letter-spacing: -0.04em;
+  }
+  h1.title .accent { color: var(--lime); }
+  .tagline { color: var(--muted); font-size: clamp(16px, 2.4vw, 20px); margin-top: 16px; max-width: 46ch; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 8px 13px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .chip .dot.lime { background: var(--lime); box-shadow: 0 0 8px var(--lime); }
+  .chip .dot.orange { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+
+  /* SECTION */
+  section { padding: 44px 0; border-top: 1px solid var(--line); }
+  .sec-head { margin-bottom: 26px; }
+  .sec-head h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 900; margin-top: 6px; }
+  .sec-head p { color: var(--muted); margin: 10px 0 0; max-width: 60ch; }
+
+  /* PILLARS GRID */
+  .grid { display: grid; gap: 16px; }
+  .pillars { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px;
+  }
+  .card .ic { font-size: 24px; }
+  .card h3 { font-size: 17px; font-weight: 800; margin: 12px 0 6px; }
+  .card p { color: var(--muted); font-size: 14px; margin: 0; }
+
+  /* APP MOCKUPS */
+  .showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 760px) { .showcase { grid-template-columns: 1fr; } }
+  .phone {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 26px;
+    padding: 16px; position: relative; overflow: hidden;
+  }
+  .phone .variant-tag {
+    position: absolute; top: 14px; right: 14px; font-size: 11px; font-weight: 800;
+    padding: 4px 9px; border-radius: 999px;
+  }
+  .tag-a { background: rgba(200,255,61,.16); color: var(--lime); }
+  .tag-b { background: rgba(255,107,61,.16); color: var(--orange); }
+  .p-head { font-size: 20px; font-weight: 900; letter-spacing: -0.02em; }
+  .p-sub { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+  .p-stats { display: flex; gap: 8px; margin-bottom: 14px; }
+  .p-stat { flex: 1; background: var(--surface-2); border-radius: 12px; padding: 10px; }
+  .p-stat b { display: block; font-size: 16px; font-weight: 900; }
+  .p-stat span { color: var(--muted); font-size: 10px; }
+
+  .hero-card {
+    border-radius: 16px; padding: 16px;
+    background: linear-gradient(135deg, #232833, #171A21);
+    border: 1px solid rgba(200,255,61,.35);
+  }
+  .hero-card .k { color: var(--lime); font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+  .hero-card .n { font-size: 17px; font-weight: 900; margin: 5px 0 12px; }
+  .btn-lime {
+    width: 100%; border: 0; border-radius: 12px; padding: 12px; cursor: default;
+    background: var(--lime); color: var(--ink); font-weight: 800; font-size: 14px;
+  }
+  .compact-tile {
+    display: flex; align-items: center; gap: 10px; background: var(--surface-2);
+    border-radius: 14px; padding: 10px 12px; margin-bottom: 10px;
+  }
+  .compact-tile .pill {
+    width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center;
+    background: rgba(200,255,61,.16); color: var(--lime); font-weight: 900;
+  }
+  .compact-tile b { font-size: 13px; }
+  .fixed-bar {
+    display: flex; align-items: center; gap: 10px; background: var(--lime);
+    color: var(--ink); border-radius: 14px; padding: 11px 12px; font-weight: 800; font-size: 13px;
+  }
+  .fixed-bar .go { margin-left: auto; background: var(--ink); color: var(--lime); border-radius: 9px; padding: 6px 11px; font-size: 12px; }
+
+  /* A/B PANEL */
+  .ab { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ab-card { background: var(--surface); border-radius: 16px; padding: 18px; border: 1px solid var(--line); }
+  .ab-card.b { border-color: rgba(255,107,61,.4); }
+  .ab-card.a { border-color: rgba(200,255,61,.4); }
+  .ab-badge { width: 26px; height: 26px; border-radius: 7px; display: inline-grid; place-items: center; font-weight: 900; color: var(--ink); }
+  .rate { font-size: 30px; font-weight: 900; letter-spacing: -0.02em; }
+  .bar { height: 12px; border-radius: 7px; background: var(--surface-2); overflow: hidden; margin-top: 8px; }
+  .bar > span { display: block; height: 100%; border-radius: 7px; }
+  .winner {
+    margin-top: 14px; background: rgba(255,107,61,.12); color: var(--orange);
+    border-radius: 12px; padding: 12px 14px; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* PIPELINE */
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; }
+  .step { flex: 1; min-width: 160px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .step .s-k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .step h3 { font-size: 15px; font-weight: 800; margin: 6px 0 4px; }
+  .step p { color: var(--muted); font-size: 13px; margin: 0; }
+  .step.ci { border-color: rgba(200,255,61,.35); }
+  .step.cd { border-color: rgba(255,107,61,.35); }
+  .arrow { align-self: center; color: var(--muted); font-size: 20px; }
+  @media (max-width: 720px) { .arrow { display: none; } }
+
+  /* LAYERS */
+  .layers { display: grid; gap: 8px; }
+  .layer { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  .layer b { font-weight: 800; font-size: 14px; }
+  .layer .tag { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; color: var(--lime); }
+  .layer span.d { color: var(--muted); font-size: 13px; }
+  @media (max-width: 620px) { .layer { grid-template-columns: 1fr; gap: 4px; } }
+
+  /* TEAM */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  td b { font-weight: 800; }
+  .tag2 { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--muted); }
+
+  footer { padding: 40px 0 60px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  footer .big { color: var(--text); font-weight: 800; font-size: 15px; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="brand">
+      <div class="logo">🏋️</div>
+      <b>IronLog</b>
+    </div>
+    <p class="eyebrow">Projeto Flutter · Teste A/B · TDD · CI/CD</p>
+    <h1 class="title">Seu treino,<br><span class="accent">sua evolução.</span></h1>
+    <p class="tagline">App de acompanhamento de treinos de academia — monte treinos A/B/C,
+      registre séries e cargas, acompanhe a evolução e veja um teste A/B rodando de verdade.</p>
+    <div class="chips">
+      <span class="chip"><span class="dot"></span> 69 testes verdes</span>
+      <span class="chip"><span class="dot"></span> flutter analyze: 0 issues</span>
+      <span class="chip"><span class="dot lime"></span> Flutter 3.47 · Dart 3.13</span>
+      <span class="chip"><span class="dot orange"></span> Web + Android</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">O que é avaliado</p>
+      <h2>Cinco pilares, um app</h2>
+      <p>Cada critério da avaliação tem uma frente concreta e demonstrável no projeto.</p>
+    </div>
+    <div class="grid pillars">
+      <div class="card"><div class="ic">🏋️</div><h3>Tema &amp; viabilidade</h3><p>Academia é um domínio familiar e visual: treino A/B/C, séries × repetições, evolução de carga. Fácil de apresentar e 100% offline.</p></div>
+      <div class="card"><div class="ic">🎨</div><h3>Front-end</h3><p>Tema escuro com acento neon, navegação por abas, dashboard, gráfico de evolução e telas de treino cuidadas.</p></div>
+      <div class="card"><div class="ic">🧪</div><h3>Teste A/B</h3><p>Experimento real com atribuição determinística e painel de conversão por variante, atualizado ao vivo.</p></div>
+      <div class="card"><div class="ic">✅</div><h3>TDD</h3><p>Lógica pura guiada por testes: 69 testes cobrindo A/B, domínio, dados, view models e telas.</p></div>
+      <div class="card"><div class="ic">🔄</div><h3>CI/CD</h3><p>GitHub Actions: cada push roda lint + testes; o merge na main publica o app na web e gera o APK.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Front-end</p>
+      <h2>A tela inicial é o experimento</h2>
+      <p>O mesmo app, duas versões da chamada para iniciar o treino. Qual converte mais?</p>
+    </div>
+    <div class="showcase">
+      <div class="phone">
+        <span class="variant-tag tag-a">Variante A</span>
+        <div class="p-head">Bora treinar 💪</div>
+        <div class="p-sub">IronLog · seu treino, sua evolução</div>
+        <div class="p-stats">
+          <div class="p-stat"><b class="num">5</b><span>dias seguidos</span></div>
+          <div class="p-stat"><b class="num">3</b><span>na semana</span></div>
+          <div class="p-stat"><b class="num">12,4 t</b><span>volume</span></div>
+        </div>
+        <div class="hero-card">
+          <div class="k">TREINO DE HOJE</div>
+          <div class="n">Treino A — Peito e Tríceps</div>
+          <div class="btn-lime">▶  Iniciar treino de hoje</div>
+        </div>
+      </div>
+      <div class="phone">
+        <span class="variant-tag tag-b">Variante B</span>
+        <div class="p-head">Bora treinar 💪</div>
+        <div class="p-sub">IronLog · seu treino, sua evolução</div>
+        <div class="p-stats">
+          <div class="p-stat"><b class="num">5</b><span>dias seguidos</span></div>
+          <div class="p-stat"><b class="num">3</b><span>na semana</span></div>
+          <div class="p-stat"><b class="num">12,4 t</b><span>volume</span></div>
+        </div>
+        <div class="compact-tile">
+          <div class="pill">A</div>
+          <div><b>Treino A — Peito e Tríceps</b><div class="p-sub" style="margin:0">5 exercícios · hoje</div></div>
+        </div>
+        <div class="fixed-bar">⚡ Mantenha a sequência! <span class="go">Iniciar</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Teste A/B</p>
+      <h2>Medindo o que importa: conversão</h2>
+      <p>Cada usuário cai sempre na mesma variante (hash determinístico). O painel acumula
+        exposições e conversões e aponta a vencedora. Números abaixo: exemplo da simulação embutida.</p>
+    </div>
+    <div class="ab">
+      <div class="ab-card a">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span class="ab-badge" style="background:var(--lime)">A</span>
+          <b>Card-herói</b>
+        </div>
+        <div class="rate" style="color:var(--lime)" ><span class="num">30,0%</span></div>
+        <div style="color:var(--muted);font-size:12px">conversão · 150 / 500</div>
+        <div class="bar"><span style="width:30%;background:var(--lime)"></span></div>
+      </div>
+      <div class="ab-card b">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span class="ab-badge" style="background:var(--orange)">B</span>
+          <b>Barra fixa</b>
+        </div>
+        <div class="rate" style="color:var(--orange)"><span class="num">45,0%</span></div>
+        <div style="color:var(--muted);font-size:12px">conversão · 225 / 500</div>
+        <div class="bar"><span style="width:45%;background:var(--orange)"></span></div>
+      </div>
+    </div>
+    <div class="winner">🏆 Variante B lidera (45,0% vs 30,0%) — a barra fixa converte mais.</div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Integração &amp; Entrega Contínua</p>
+      <h2>Do commit ao app no ar</h2>
+      <p>Automação com GitHub Actions — nada quebrado entra na main, e o que entra vai pro ar.</p>
+    </div>
+    <div class="flow">
+      <div class="step"><div class="s-k">Gatilho</div><h3>Push / Pull Request</h3><p>Toda alteração dispara o pipeline.</p></div>
+      <div class="arrow">→</div>
+      <div class="step ci"><div class="s-k">CI</div><h3>Lint + Testes</h3><p><span class="tag2">flutter analyze</span> · <span class="tag2">flutter test</span> · formatação e cobertura.</p></div>
+      <div class="arrow">→</div>
+      <div class="step"><div class="s-k">Merge</div><h3>Branch main</h3><p>Só entra com o CI verde.</p></div>
+      <div class="arrow">→</div>
+      <div class="step cd"><div class="s-k">CD</div><h3>Deploy + APK</h3><p>Build web → GitHub Pages e APK como artefato.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Arquitetura</p>
+      <h2>Camadas que se testam sozinhas</h2>
+      <p>Regras de negócio puras (sem Flutter) tornam o TDD rápido e a divisão de tarefas natural.</p>
+    </div>
+    <div class="layers">
+      <div class="layer"><b>UI</b><span class="d">Telas e widgets — <span class="tag">features/**</span></span></div>
+      <div class="layer"><b>View Models</b><span class="d">Estado com ChangeNotifier — <span class="tag">*_view_model.dart</span></span></div>
+      <div class="layer"><b>Domínio</b><span class="d">Modelos e estatísticas puros — <span class="tag">domain/**</span></span></div>
+      <div class="layer"><b>Dados</b><span class="d">Persistência local — <span class="tag">data/** · SharedPreferences</span></span></div>
+      <div class="layer"><b>Teste A/B</b><span class="d">Framework transversal — <span class="tag">core/ab/**</span></span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Equipe · 4 integrantes</p>
+      <h2>Frentes de trabalho</h2>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Frente</th><th>Responsável</th><th>Onde</th></tr></thead>
+        <tbody>
+          <tr><td><b>Domínio &amp; Testes</b></td><td>Integrante 1</td><td class="tag2">domain/ · data/</td></tr>
+          <tr><td><b>Teste A/B</b></td><td>Integrante 2</td><td class="tag2">core/ab/ · ab_dashboard/</td></tr>
+          <tr><td><b>Front-end / UX</b></td><td>Integrante 3</td><td class="tag2">features/ · theme/</td></tr>
+          <tr><td><b>CI/CD &amp; Infra</b></td><td>Integrante 4</td><td class="tag2">.github/workflows/</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div class="big">IronLog — Treino &amp; Progresso</div>
+    <p>Flutter · Dart · Provider · SharedPreferences · fl_chart · GitHub Actions · GitHub Pages.<br>
+      Feito com 💚 para a disciplina.</p>
+  </footer>
+</div>
