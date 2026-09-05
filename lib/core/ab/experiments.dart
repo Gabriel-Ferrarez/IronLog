@@ -7,13 +7,14 @@ import 'experiment.dart';
 class Experiments {
   Experiments._();
 
-  /// Testa qual layout da tela inicial gera mais "inícios de treino".
+  /// Testa qual chamada da tela inicial gera mais "inícios de treino".
   ///
-  /// - Variante A (controle): card grande com botão de destaque.
-  /// - Variante B (tratamento): resumo compacto + barra fixa inferior.
+  /// - Variante A (controle): card-herói com botão de destaque.
+  /// - Variante B (tratamento): resumo compacto com barra fixa inferior.
   static const homeCta = Experiment(
     key: 'home_cta_layout',
-    description: 'Layout da chamada para iniciar o treino na tela inicial',
+    description:
+        'Comparação entre card-herói e barra fixa para iniciar o treino',
     weightB: 0.5,
   );
 

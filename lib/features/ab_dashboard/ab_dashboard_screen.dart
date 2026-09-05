@@ -44,7 +44,7 @@ class AbDashboardScreen extends StatelessWidget {
               Expanded(
                 child: _VariantCard(
                   variant: Variant.a,
-                  title: 'Bloco-herói',
+                  title: 'Card-herói',
                   analytics: analytics,
                   experimentKey: _experiment.key,
                 ),
