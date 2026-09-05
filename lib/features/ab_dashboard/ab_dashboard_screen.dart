@@ -119,16 +119,31 @@ class AbDashboardScreen extends StatelessWidget {
           const SizedBox(height: 8),
           const Text(
             'Simula usuários entrando no app para popular as métricas '
-            'e ver o experimento em ação.',
+            'ou limpa os dados registrados.',
             style: TextStyle(color: AppTheme.textDim, fontSize: 13),
           ),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => _simulate(context, 100),
-              child: const Text('SIMULAR 100 USUÁRIOS'),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => _simulate(context, 100),
+                  child: const Text('SIMULAR 100 USUÁRIOS'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                tooltip: 'Zerar métricas',
+                onPressed: () => _clearMetrics(context),
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                style: IconButton.styleFrom(
+                  side: const BorderSide(color: AppTheme.border),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radius),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -152,6 +167,19 @@ class AbDashboardScreen extends StatelessWidget {
     }
   }
 }
+
+/// Reseta todas as métricas acumuladas do experimento A/B.
+  void _clearMetrics(BuildContext context) {
+    final analytics = context.read<AbAnalytics>();
+    analytics.clear();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Métricas zeradas com sucesso!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
 class _VariantCard extends StatelessWidget {
   final Variant variant;
