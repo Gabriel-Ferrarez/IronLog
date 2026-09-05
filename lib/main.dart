@@ -14,7 +14,7 @@ import 'features/app_state.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final store = await SharedPrefsStore.create();
+  final store = await _openStore();
   final userId = await _ensureUserId(store);
 
   // Repositórios.
@@ -45,13 +45,25 @@ Future<void> main() async {
   ));
 }
 
+/// Abre o armazenamento local; se indisponível (ex.: navegador sem
+/// localStorage), cai para memória para que o app nunca quebre no boot.
+Future<KeyValueStore> _openStore() async {
+  try {
+    return await SharedPrefsStore.create();
+  } catch (e) {
+    debugPrint('Persistência indisponível, usando memória: $e');
+    return InMemoryKeyValueStore();
+  }
+}
+
 /// Recupera (ou cria e salva) um id estável para este usuário/dispositivo.
 Future<String> _ensureUserId(KeyValueStore store) async {
   const key = 'user_id';
   final existing = await store.getString(key);
   if (existing != null && existing.isNotEmpty) return existing;
+  // Limite seguro em web (JS trunca deslocamentos em 32 bits) e no VM.
   final id = 'user_${DateTime.now().millisecondsSinceEpoch}_'
-      '${Random().nextInt(1 << 32)}';
+      '${Random().nextInt(1 << 30)}';
   await store.setString(key, id);
   return id;
 }
