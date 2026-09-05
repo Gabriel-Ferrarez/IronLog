@@ -169,17 +169,17 @@ class AbDashboardScreen extends StatelessWidget {
 }
 
 /// Reseta todas as métricas acumuladas do experimento A/B.
-  void _clearMetrics(BuildContext context) {
-    final analytics = context.read<AbAnalytics>();
-    analytics.clear();
+void _clearMetrics(BuildContext context) {
+  final analytics = context.read<AbAnalytics>();
+  analytics.clear();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Métricas zeradas com sucesso!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Métricas zeradas com sucesso!'),
+      duration: Duration(seconds: 2),
+    ),
+  );
+}
 
 class _VariantCard extends StatelessWidget {
   final Variant variant;

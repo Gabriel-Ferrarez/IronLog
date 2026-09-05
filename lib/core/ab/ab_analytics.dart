@@ -61,10 +61,10 @@ class AbAnalytics extends ChangeNotifier {
   }
 
   void clear() {
-  // Limpe aqui o mapa/estrutura de dados interna da classe
-  // Exemplo: _exposures.clear(); _conversions.clear();
-  notifyListeners();
-}
+    // Limpe aqui o mapa/estrutura de dados interna da classe
+    // Exemplo: _exposures.clear(); _conversions.clear();
+    notifyListeners();
+  }
 
   VariantStats _ref(String experimentKey, Variant variant) {
     final byVariant = _data.putIfAbsent(experimentKey, () => {});

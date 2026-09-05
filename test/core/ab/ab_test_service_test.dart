@@ -69,7 +69,6 @@ void main() {
         if (service.assign(exp25, 'p_$i') == Variant.b) b++;
       }
       expect(b / total, closeTo(0.25, 0.05));
-    }); 
-
+    });
   });
 }
