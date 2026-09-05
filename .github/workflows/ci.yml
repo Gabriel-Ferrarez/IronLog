@@ -1,0 +1,47 @@
+# Integração Contínua (CI)
+# Roda em todo push e pull request: analisa o código e executa os testes (TDD).
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+# Cancela execuções antigas do mesmo branch quando chega um push novo.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Análise + Testes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Baixar dependências
+        run: flutter pub get
+
+      - name: Verificar formatação
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Análise estática (lint)
+        run: flutter analyze
+
+      - name: Rodar testes com cobertura
+        run: flutter test --coverage
+
+      - name: Publicar relatório de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          if-no-files-found: warn
