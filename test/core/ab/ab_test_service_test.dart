@@ -60,5 +60,16 @@ void main() {
       }
       expect(diff, greaterThan(0));
     });
+
+    test('respeita um peso assimétrico de 25% em B', () {
+      const exp25 = Experiment(key: 'exp25', weightB: 0.25);
+      var b = 0;
+      const total = 4000;
+      for (var i = 0; i < total; i++) {
+        if (service.assign(exp25, 'p_$i') == Variant.b) b++;
+      }
+      expect(b / total, closeTo(0.25, 0.05));
+    }); 
+
   });
 }
