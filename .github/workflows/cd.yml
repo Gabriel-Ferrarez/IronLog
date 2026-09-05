@@ -72,6 +72,11 @@ jobs:
 
       - run: flutter pub get
 
+      # Gera a pasta android/ no CI (ambiente com boa conexão), evitando
+      # versioná-la. Se já existir no repositório, o comando apenas a mantém.
+      - name: Garantir plataforma Android
+        run: flutter create . --platforms android --org br.com.ironlog --project-name gym_tracker
+
       - name: Build APK (release)
         run: flutter build apk --release
 
