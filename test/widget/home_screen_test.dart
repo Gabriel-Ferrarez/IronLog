@@ -58,11 +58,13 @@ void main() {
     await tester.pumpWidget(_wrap(app, analytics, vm));
     await tester.pump(); // executa o callback pós-frame (exposição)
 
-    expect(find.text('Iniciar treino de hoje'), findsOneWidget);
+    expect(find.byKey(const Key('home_variant_a')), findsOneWidget);
+    expect(find.byKey(const Key('home_variant_b')), findsNothing);
+    expect(find.text('INICIAR TREINO'), findsOneWidget);
     expect(analytics.exposures('home_cta_layout', vm.variant), 1);
   });
 
-  testWidgets('Variante B mostra a barra fixa de incentivo', (tester) async {
+  testWidgets('Variante B mostra o layout compacto', (tester) async {
     final app = await _buildAppState();
     final analytics = AbAnalytics();
     final vm = HomeViewModel(
@@ -75,7 +77,8 @@ void main() {
     await tester.pumpWidget(_wrap(app, analytics, vm));
     await tester.pump();
 
-    expect(find.text('Mantenha a sequência! Comece agora.'), findsOneWidget);
+    expect(find.byKey(const Key('home_variant_b')), findsOneWidget);
+    expect(find.byKey(const Key('home_variant_a')), findsNothing);
   });
 
   testWidgets('Tocar em iniciar registra a conversão da variante',

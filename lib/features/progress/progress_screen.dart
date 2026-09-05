@@ -19,11 +19,11 @@ class ProgressScreen extends StatelessWidget {
     final vm = ProgressViewModel(app.sessions);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Progresso')),
+      appBar: AppBar(title: const Text('PROGRESSO')),
       body: vm.isEmpty
           ? _empty()
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
               children: [
                 Row(
                   children: [
@@ -31,35 +31,37 @@ class ProgressScreen extends StatelessWidget {
                       child: StatTile(
                         value: '${vm.totalSessions}',
                         label: 'sessões',
-                        icon: Icons.event_available,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: StatTile(
                         value: formatVolume(vm.totalVolume),
                         label: 'volume total',
-                        icon: Icons.fitness_center,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: StatTile(
                         value: formatVolume(vm.bestVolume),
                         label: 'melhor sessão',
-                        icon: Icons.emoji_events,
-                        accent: AppTheme.orange,
+                        emphasize: true,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
                 const SectionTitle('Evolução do volume'),
-                const SizedBox(height: 16),
-                SizedBox(height: 220, child: _Chart(points: vm.volumePoints)),
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
+                Container(
+                  height: 230,
+                  padding: const EdgeInsets.fromLTRB(8, 18, 16, 8),
+                  decoration: AppTheme.panel(),
+                  child: _Chart(points: vm.volumePoints),
+                ),
+                const SizedBox(height: 28),
                 const SectionTitle('Histórico'),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 for (final session in app.sessions)
                   _HistoryTile(session: session),
               ],
@@ -68,18 +70,18 @@ class ProgressScreen extends StatelessWidget {
   }
 
   Widget _empty() {
-    return const Center(
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.insights, size: 56, color: AppTheme.textMuted),
-            SizedBox(height: 16),
+            const Icon(Icons.show_chart, size: 48, color: AppTheme.textFaint),
+            const SizedBox(height: 18),
             Text(
-              'Ainda não há sessões registradas.\nInicie um treino para ver sua evolução.',
+              'SEM SESSÕES REGISTRADAS.\nINICIE UM TREINO PARA VER A EVOLUÇÃO.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppTheme.textMuted),
+              style: AppTheme.label.copyWith(height: 1.6),
             ),
           ],
         ),
@@ -103,7 +105,11 @@ class _Chart extends StatelessWidget {
     return LineChart(
       LineChartData(
         minY: 0,
-        gridData: const FlGridData(show: true, drawVerticalLine: false),
+        gridData: const FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: null,
+        ),
         borderData: FlBorderData(show: false),
         titlesData: const FlTitlesData(
           leftTitles: AxisTitles(
@@ -115,13 +121,13 @@ class _Chart extends StatelessWidget {
         lineBarsData: [
           LineChartBarData(
             spots: spots,
-            isCurved: true,
-            color: AppTheme.lime,
-            barWidth: 3,
+            isCurved: false,
+            color: AppTheme.accent,
+            barWidth: 2.5,
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: AppTheme.lime.withValues(alpha: 0.15),
+              color: AppTheme.accent.withValues(alpha: 0.10),
             ),
           ),
         ],
@@ -143,21 +149,39 @@ class _HistoryTile extends StatelessWidget {
     final dateStr =
         '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-        leading: LabelPill(
-          text: workout?.label ?? '?',
-          color: AppTheme.lime,
-        ),
-        title: Text(workout?.name ?? 'Treino',
-            style: const TextStyle(fontWeight: FontWeight.w700)),
-        subtitle: Text('$dateStr · ${session.totalSets} séries'),
-        trailing: Text(
-          formatVolume(session.totalVolume),
-          style: const TextStyle(
-              fontWeight: FontWeight.w800, color: AppTheme.lime),
-        ),
+      padding: const EdgeInsets.all(14),
+      decoration: AppTheme.panel(),
+      child: Row(
+        children: [
+          LabelPill(text: workout?.label ?? '?'),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  (workout?.name ?? 'Treino').toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTheme.heavyTitle.copyWith(fontSize: 14),
+                ),
+                const SizedBox(height: 3),
+                Text('$dateStr · ${session.totalSets} SÉRIES',
+                    style: AppTheme.label.copyWith(fontSize: 10)),
+              ],
+            ),
+          ),
+          Text(
+            formatVolume(session.totalVolume),
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 15,
+              color: AppTheme.text,
+            ),
+          ),
+        ],
       ),
     );
   }

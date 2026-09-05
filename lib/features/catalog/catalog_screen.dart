@@ -26,28 +26,22 @@ class _CatalogScreenState extends State<CatalogScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Catálogo de exercícios')),
+      appBar: AppBar(title: const Text('CATÁLOGO')),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
             child: TextField(
               key: const Key('catalog_search'),
               onChanged: (v) => setState(() => _query = v),
-              decoration: InputDecoration(
-                hintText: 'Buscar exercício...',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: AppTheme.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
-                ),
+              decoration: const InputDecoration(
+                hintText: 'Buscar exercício',
+                prefixIcon: Icon(Icons.search, color: AppTheme.textFaint),
               ),
             ),
           ),
           SizedBox(
-            height: 44,
+            height: 40,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -61,8 +55,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
           Expanded(
             child: results.isEmpty
                 ? const Center(
-                    child: Text('Nenhum exercício encontrado.',
-                        style: TextStyle(color: AppTheme.textMuted)),
+                    child: Text('NENHUM EXERCÍCIO ENCONTRADO.',
+                        style: AppTheme.label),
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
@@ -83,6 +77,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       child: ChoiceChip(
         label: Text(label),
         selected: selected,
+        showCheckmark: false,
         onSelected: (_) => setState(() => _group = group),
       ),
     );
@@ -96,15 +91,34 @@ class _ExerciseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const CircleAvatar(
-          backgroundColor: AppTheme.surfaceHigh,
-          child: Icon(Icons.fitness_center, color: AppTheme.lime, size: 20),
-        ),
-        title: Text(exercise.name,
-            style: const TextStyle(fontWeight: FontWeight.w700)),
-        subtitle: Text('${exercise.muscleGroup.label} · ${exercise.equipment}'),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: AppTheme.panel(),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  exercise.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    color: AppTheme.text,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  '${exercise.muscleGroup.label} · ${exercise.equipment}'
+                      .toUpperCase(),
+                  style: AppTheme.label.copyWith(fontSize: 10),
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.fitness_center, color: AppTheme.textFaint, size: 18),
+        ],
       ),
     );
   }

@@ -19,7 +19,7 @@ class WorkoutsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meus treinos'),
+        title: const Text('MEUS TREINOS'),
         actions: [
           IconButton(
             tooltip: 'Catálogo',
@@ -31,7 +31,7 @@ class WorkoutsScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
           for (final workout in app.workouts) _WorkoutCard(workout: workout),
         ],
@@ -49,64 +49,64 @@ class _WorkoutCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final app = context.read<AppState>();
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                LabelPill(text: workout.label, color: AppTheme.lime),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    workout.name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w800),
-                  ),
+      padding: const EdgeInsets.all(18),
+      decoration: AppTheme.panel(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              LabelPill(text: workout.label),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  workout.name.toUpperCase(),
+                  style: AppTheme.heavyTitle.copyWith(fontSize: 17),
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            for (final we in workout.exercises)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
-                child: Row(
-                  children: [
-                    const Icon(Icons.circle,
-                        size: 6, color: AppTheme.textMuted),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        app.exercise(we.exerciseId)?.name ?? we.exerciseId,
-                        style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          for (final we in workout.exercises)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      app.exercise(we.exerciseId)?.name ?? we.exerciseId,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.text,
                       ),
                     ),
-                    Text(
-                      '${we.targetSets}×${we.targetReps}',
-                      style: const TextStyle(
-                          color: AppTheme.textMuted, fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => LogSessionScreen(workout: workout),
                   ),
-                ),
-                icon: const Icon(Icons.play_arrow_rounded),
-                label: const Text('Iniciar treino'),
+                  Text(
+                    '${we.targetSets}×${we.targetReps}',
+                    style: const TextStyle(
+                      color: AppTheme.textDim,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LogSessionScreen(workout: workout),
+                ),
+              ),
+              child: const Text('INICIAR TREINO'),
+            ),
+          ),
+        ],
       ),
     );
   }

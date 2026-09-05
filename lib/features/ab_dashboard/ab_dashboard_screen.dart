@@ -10,6 +10,11 @@ import '../../core/ab/experiments.dart';
 import '../../core/ab/variant.dart';
 import '../../core/theme/app_theme.dart';
 import '../../utils/format.dart';
+import '../../widgets/common.dart';
+
+/// Cor de cada variante: A é neutra (controle), B usa o destaque único.
+Color _variantColor(Variant v) =>
+    v == Variant.b ? AppTheme.accent : AppTheme.textDim;
 
 /// Painel de acompanhamento do teste A/B: exposições, conversões e taxa de
 /// conversão de cada variante, atualizados em tempo real.
@@ -28,18 +33,18 @@ class AbDashboardScreen extends StatelessWidget {
     final expB = analytics.exposures(_experiment.key, Variant.b);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Experimento A/B')),
+      appBar: AppBar(title: const Text('EXPERIMENTO A/B')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
         children: [
           _explanationCard(_experiment),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
                 child: _VariantCard(
                   variant: Variant.a,
-                  title: 'Card-herói',
+                  title: 'Bloco-herói',
                   analytics: analytics,
                   experimentKey: _experiment.key,
                 ),
@@ -55,15 +60,20 @@ class AbDashboardScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           _WinnerBanner(rateA: rateA, rateB: rateB, expA: expA, expB: expB),
-          const SizedBox(height: 24),
-          const Text('Comparação da taxa de conversão',
-              style: TextStyle(fontWeight: FontWeight.w800)),
+          const SizedBox(height: 28),
+          const SectionTitle('Comparação da conversão'),
+          const SizedBox(height: 14),
+          _RateBar(
+              label: 'VARIANTE A',
+              rate: rateA,
+              color: _variantColor(Variant.a)),
           const SizedBox(height: 12),
-          _RateBar(label: 'Variante A', rate: rateA, color: AppTheme.lime),
-          const SizedBox(height: 10),
-          _RateBar(label: 'Variante B', rate: rateB, color: AppTheme.orange),
+          _RateBar(
+              label: 'VARIANTE B',
+              rate: rateB,
+              color: _variantColor(Variant.b)),
           const SizedBox(height: 28),
           _simulationCard(context),
         ],
@@ -72,62 +82,55 @@ class AbDashboardScreen extends StatelessWidget {
   }
 
   Widget _explanationCard(Experiment experiment) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.science_outlined, color: AppTheme.lime),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(experiment.key,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w800, fontSize: 15)),
-                ),
-              ],
+    return Panel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            experiment.key,
+            style: const TextStyle(
+              fontFamily: 'monospace',
+              fontWeight: FontWeight.w800,
+              fontSize: 14,
+              color: AppTheme.accent,
             ),
-            const SizedBox(height: 8),
-            Text(experiment.description,
-                style: const TextStyle(color: AppTheme.textMuted)),
-            const SizedBox(height: 8),
-            Text(
-              'Divisão: ${formatPercent(1 - experiment.weightB)} A · '
-              '${formatPercent(experiment.weightB)} B',
-              style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 10),
+          Text(experiment.description,
+              style: const TextStyle(color: AppTheme.textDim)),
+          const SizedBox(height: 10),
+          Text(
+            'DIVISÃO ${formatPercent(1 - experiment.weightB)} A · '
+            '${formatPercent(experiment.weightB)} B',
+            style: AppTheme.label,
+          ),
+        ],
       ),
     );
   }
 
   Widget _simulationCard(BuildContext context) {
-    return Card(
-      color: AppTheme.surfaceHigh,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Demonstração',
-                style: TextStyle(fontWeight: FontWeight.w800)),
-            const SizedBox(height: 4),
-            const Text(
-              'Simula usuários entrando no app para popular as métricas '
-              'e visualizar o experimento em ação.',
-              style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
-            ),
-            const SizedBox(height: 12),
-            FilledButton.icon(
+    return Panel(
+      color: AppTheme.surfaceAlt,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('DEMONSTRAÇÃO', style: AppTheme.label),
+          const SizedBox(height: 8),
+          const Text(
+            'Simula usuários entrando no app para popular as métricas '
+            'e ver o experimento em ação.',
+            style: TextStyle(color: AppTheme.textDim, fontSize: 13),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
               onPressed: () => _simulate(context, 100),
-              icon: const Icon(Icons.groups_outlined),
-              label: const Text('Simular 100 usuários'),
+              child: const Text('SIMULAR 100 USUÁRIOS'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -165,17 +168,16 @@ class _VariantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = variant == Variant.a ? AppTheme.lime : AppTheme.orange;
+    final color = _variantColor(variant);
     final exposures = analytics.exposures(experimentKey, variant);
     final conversions = analytics.conversions(experimentKey, variant);
     final rate = analytics.conversionRate(experimentKey, variant);
+    final isB = variant == Variant.b;
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
+      decoration: AppTheme.panel(
+        borderColor: isB ? AppTheme.accent : AppTheme.border,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,34 +185,45 @@ class _VariantCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 28,
-                height: 28,
+                width: 26,
+                height: 26,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(8),
+                  color: isB ? AppTheme.accent : AppTheme.surfaceAlt,
+                  border: Border.all(
+                      color: isB ? AppTheme.accent : AppTheme.borderStrong),
+                  borderRadius: BorderRadius.circular(AppTheme.radius),
                 ),
-                child: Text(variant.label,
-                    style: const TextStyle(
-                        color: Color(0xFF10130A), fontWeight: FontWeight.w900)),
+                child: Text(
+                  variant.label,
+                  style: TextStyle(
+                    color: isB ? AppTheme.onAccent : AppTheme.text,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 13,
+                  ),
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 13)),
+                child: Text(title.toUpperCase(),
+                    style: AppTheme.label.copyWith(fontSize: 10)),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          Text(formatPercent(rate),
-              style: TextStyle(
-                  fontSize: 28, fontWeight: FontWeight.w900, color: color)),
-          const Text('conversão',
-              style: TextStyle(color: AppTheme.textMuted, fontSize: 12)),
+          const SizedBox(height: 16),
+          Text(
+            formatPercent(rate),
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -1,
+              color: color,
+            ),
+          ),
+          Text('CONVERSÃO', style: AppTheme.label.copyWith(fontSize: 9)),
           const SizedBox(height: 10),
           Text('$conversions / $exposures',
-              style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+              style: const TextStyle(fontSize: 12, color: AppTheme.textDim)),
         ],
       ),
     );
@@ -236,42 +249,54 @@ class _WinnerBanner extends StatelessWidget {
     if (expA + expB < 10) {
       return _banner(
         icon: Icons.hourglass_empty,
-        text: 'Colete mais dados para comparar as variantes.',
-        color: AppTheme.textMuted,
+        text: 'COLETE MAIS DADOS PARA COMPARAR.',
+        color: AppTheme.textDim,
       );
     }
     if ((rateA - rateB).abs() < 0.0001) {
       return _banner(
         icon: Icons.balance,
-        text: 'Empate técnico entre A e B por enquanto.',
-        color: AppTheme.textMuted,
+        text: 'EMPATE TÉCNICO ENTRE A E B.',
+        color: AppTheme.textDim,
       );
     }
     final bWins = rateB > rateA;
     return _banner(
       icon: Icons.emoji_events,
       text: bWins
-          ? 'Variante B lidera (${formatPercent(rateB)} vs ${formatPercent(rateA)}).'
-          : 'Variante A lidera (${formatPercent(rateA)} vs ${formatPercent(rateB)}).',
-      color: bWins ? AppTheme.orange : AppTheme.lime,
+          ? 'VARIANTE B LIDERA · ${formatPercent(rateB)} VS ${formatPercent(rateA)}'
+          : 'VARIANTE A LIDERA · ${formatPercent(rateA)} VS ${formatPercent(rateB)}',
+      color: bWins ? AppTheme.accent : AppTheme.text,
     );
   }
 
-  Widget _banner(
-      {required IconData icon, required String text, required Color color}) {
+  Widget _banner({
+    required IconData icon,
+    required String text,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(16),
+        color: AppTheme.surface,
+        border: Border.all(
+            color: color == AppTheme.textDim ? AppTheme.border : color),
+        borderRadius: BorderRadius.circular(AppTheme.radius),
       ),
       child: Row(
         children: [
-          Icon(icon, color: color),
-          const SizedBox(width: 10),
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(text,
-                style: TextStyle(color: color, fontWeight: FontWeight.w700)),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+                letterSpacing: 0.5,
+              ),
+            ),
           ),
         ],
       ),
@@ -284,8 +309,11 @@ class _RateBar extends StatelessWidget {
   final double rate;
   final Color color;
 
-  const _RateBar(
-      {required this.label, required this.rate, required this.color});
+  const _RateBar({
+    required this.label,
+    required this.rate,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -295,18 +323,18 @@ class _RateBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: const TextStyle(fontSize: 13)),
+            Text(label, style: AppTheme.label),
             Text(formatPercent(rate),
-                style: TextStyle(fontWeight: FontWeight.w800, color: color)),
+                style: TextStyle(fontWeight: FontWeight.w900, color: color)),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.radius),
           child: LinearProgressIndicator(
             value: rate.clamp(0.0, 1.0),
-            minHeight: 12,
-            backgroundColor: AppTheme.surfaceHigh,
+            minHeight: 10,
+            backgroundColor: AppTheme.surfaceAlt,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),

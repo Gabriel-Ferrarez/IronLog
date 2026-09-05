@@ -34,14 +34,14 @@ class _LogSessionView extends StatelessWidget {
     final app = context.read<AppState>();
     if (!vm.hasAnySet) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registre ao menos uma série.')),
+        const SnackBar(content: Text('REGISTRE AO MENOS UMA SÉRIE.')),
       );
       return;
     }
     await app.addSession(vm.buildSession());
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Treino registrado! 🎉')),
+      const SnackBar(content: Text('TREINO REGISTRADO')),
     );
     Navigator.of(context).pop();
   }
@@ -50,36 +50,61 @@ class _LogSessionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<SessionViewModel>();
     return Scaffold(
-      appBar: AppBar(title: Text(workout.name)),
+      appBar: AppBar(title: Text(workout.name.toUpperCase())),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 130),
         children: [
           for (final we in workout.exercises)
             _ExerciseCard(exerciseId: we.exerciseId, target: we),
         ],
       ),
       bottomSheet: Container(
-        color: AppTheme.surface,
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+        decoration: const BoxDecoration(
+          color: AppTheme.bg,
+          border: Border(top: BorderSide(color: AppTheme.border)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 22),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text('${vm.totalSets} séries',
-                      style: const TextStyle(fontWeight: FontWeight.w800)),
-                  Text('Volume: ${formatVolume(vm.totalVolume)}',
-                      style: const TextStyle(
-                          color: AppTheme.textMuted, fontSize: 12)),
+                  Text(
+                    '${vm.totalSets}',
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1.5,
+                      color: AppTheme.text,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('SÉRIES', style: AppTheme.label),
+                        Text(
+                          formatVolume(vm.totalVolume),
+                          style: const TextStyle(
+                            color: AppTheme.textDim,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            ElevatedButton.icon(
+            ElevatedButton(
               onPressed: () => _finish(context),
-              icon: const Icon(Icons.check_rounded),
-              label: const Text('Concluir'),
+              child: const Text('CONCLUIR'),
             ),
           ],
         ),
@@ -127,80 +152,145 @@ class _ExerciseCardState extends State<_ExerciseCard> {
     final exercise = app.exercise(widget.exerciseId);
     final sets = vm.setsOf(widget.exerciseId);
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(exercise?.name ?? widget.exerciseId,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-            Text(
-              'Meta: ${widget.target.targetSets}×${widget.target.targetReps}'
-              '${exercise != null ? ' · ${exercise.muscleGroup.label}' : ''}',
-              style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
-            ),
-            const SizedBox(height: 12),
-            if (sets.isNotEmpty)
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (var i = 0; i < sets.length; i++)
-                    InputChip(
-                      label: Text(
-                          '${sets[i].reps}× ${_fmtWeight(sets[i].weightKg)}'),
-                      onDeleted: () => context
-                          .read<SessionViewModel>()
-                          .removeSet(widget.exerciseId, i),
-                    ),
-                ],
-              ),
-            const SizedBox(height: 8),
-            Row(
+      padding: const EdgeInsets.all(18),
+      decoration: AppTheme.panel(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            (exercise?.name ?? widget.exerciseId).toUpperCase(),
+            style: AppTheme.heavyTitle.copyWith(fontSize: 17),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'META ${widget.target.targetSets}×${widget.target.targetReps}'
+            '${exercise != null ? ' · ${exercise.muscleGroup.label.toUpperCase()}' : ''}',
+            style: AppTheme.label,
+          ),
+          if (sets.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _repsController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      labelText: 'Reps',
-                      isDense: true,
-                      border: OutlineInputBorder(),
-                    ),
+                for (var i = 0; i < sets.length; i++)
+                  _SetChip(
+                    reps: sets[i].reps,
+                    weight: sets[i].weightKg,
+                    onRemove: () => context
+                        .read<SessionViewModel>()
+                        .removeSet(widget.exerciseId, i),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: _weightController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                      labelText: 'Carga (kg)',
-                      isDense: true,
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton.filled(
-                  onPressed: _add,
-                  icon: const Icon(Icons.add),
-                ),
               ],
             ),
           ],
-        ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _repsController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'REPS',
+                    isDense: true,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: _weightController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'CARGA (KG)',
+                    isDense: true,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              SizedBox(
+                height: 52,
+                width: 52,
+                child: ElevatedButton(
+                  onPressed: _add,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: const Icon(Icons.add, size: 24),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
+}
 
-  String _fmtWeight(double kg) {
-    if (kg == kg.roundToDouble()) return '${kg.round()}kg';
-    return '${kg.toStringAsFixed(1).replaceAll('.', ',')}kg';
+/// Bloco de uma série registrada: número em destaque + remover.
+class _SetChip extends StatelessWidget {
+  final int reps;
+  final double weight;
+  final VoidCallback onRemove;
+
+  const _SetChip({
+    required this.reps,
+    required this.weight,
+    required this.onRemove,
+  });
+
+  String get _weightLabel {
+    if (weight == weight.roundToDouble()) return '${weight.round()}kg';
+    return '${weight.toStringAsFixed(1).replaceAll('.', ',')}kg';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceAlt,
+        border: Border.all(color: AppTheme.borderStrong),
+        borderRadius: BorderRadius.circular(AppTheme.radius),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$reps',
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
+              color: AppTheme.text,
+            ),
+          ),
+          Text(
+            ' × $_weightLabel',
+            style: const TextStyle(color: AppTheme.textDim, fontSize: 13),
+          ),
+          const SizedBox(width: 2),
+          GestureDetector(
+            onTap: onRemove,
+            child: const Padding(
+              padding: EdgeInsets.all(4),
+              child: Icon(Icons.close, size: 15, color: AppTheme.textFaint),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -45,20 +45,20 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
           children: [
             _header(app),
-            const SizedBox(height: 20),
+            const SizedBox(height: 28),
             _statsRow(app),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
             if (workout != null)
               vm.variant == Variant.a
                   ? _variantAHero(workout)
-                  : _variantBCompact(workout)
+                  : _variantBCompact(workout, app.streak)
             else
               _noWorkout(),
-            const SizedBox(height: 20),
-            _variantBadge(vm.variant),
+            const SizedBox(height: 24),
+            _experimentTag(vm.variant),
           ],
         ),
       ),
@@ -67,43 +67,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _header(AppState app) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Bora treinar 💪',
+              'IRONLOG',
               style: TextStyle(
-                fontSize: 26,
+                color: AppTheme.text,
+                fontSize: 30,
                 fontWeight: FontWeight.w900,
-                letterSpacing: -0.6,
+                letterSpacing: 1,
               ),
             ),
-            SizedBox(height: 2),
-            Text(
-              'IronLog · seu treino, sua evolução',
-              style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
-            ),
+            SizedBox(height: 4),
+            Text('PAINEL DE TREINO', style: AppTheme.label),
           ],
         ),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppTheme.orange.withValues(alpha: 0.16),
-            borderRadius: BorderRadius.circular(14),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: AppTheme.panel(),
           child: Row(
             children: [
-              const Icon(Icons.local_fire_department,
-                  color: AppTheme.orange, size: 18),
-              const SizedBox(width: 4),
               Text(
                 '${app.streak}',
                 style: const TextStyle(
-                  color: AppTheme.orange,
+                  color: AppTheme.accent,
+                  fontSize: 22,
                   fontWeight: FontWeight.w900,
+                  letterSpacing: -1,
                 ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'DIAS\nSEQ.',
+                style: AppTheme.label.copyWith(fontSize: 9, height: 1.1),
               ),
             ],
           ),
@@ -116,72 +116,53 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       children: [
         Expanded(
-          child: StatTile(
-            value: '${app.streak}',
-            label: 'dias seguidos',
-            icon: Icons.local_fire_department,
-            accent: AppTheme.orange,
-          ),
+          child: StatTile(value: '${app.streak}', label: 'dias seguidos'),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: StatTile(
             value: '${app.sessionsThisWeek}',
-            label: 'treinos na semana',
-            icon: Icons.event_available,
+            label: 'treinos / semana',
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: StatTile(
             value: formatVolume(app.totalVolume),
             label: 'volume total',
-            icon: Icons.fitness_center,
           ),
         ),
       ],
     );
   }
 
-  // ---- Variante A (controle): card-herói com botão grande ----
+  // ---- Variante A (controle): bloco-herói com botão grande ----
   Widget _variantAHero(Workout workout) {
     return Container(
+      key: const Key('home_variant_a'),
       padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF232833), Color(0xFF171A21)],
-        ),
-        border: Border.all(color: AppTheme.lime.withValues(alpha: 0.35)),
-      ),
+      decoration: AppTheme.panel(borderColor: AppTheme.borderStrong),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('TREINO DE HOJE',
-              style: TextStyle(
-                color: AppTheme.lime,
-                fontWeight: FontWeight.w800,
-                fontSize: 12,
-                letterSpacing: 1.2,
-              )),
-          const SizedBox(height: 8),
           Text(
-            workout.name,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+            'TREINO DE HOJE',
+            style: AppTheme.label.copyWith(color: AppTheme.accent),
           ),
-          const SizedBox(height: 4),
-          Text('${workout.exerciseCount} exercícios',
-              style: const TextStyle(color: AppTheme.textMuted)),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
+          Text(
+            workout.name.toUpperCase(),
+            style: AppTheme.heavyTitle.copyWith(fontSize: 26),
+          ),
+          const SizedBox(height: 8),
+          Text('${workout.exerciseCount} EXERCÍCIOS', style: AppTheme.label),
+          const SizedBox(height: 22),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: ElevatedButton(
               key: const Key('start_workout_button'),
               onPressed: () => _startWorkout(workout),
-              icon: const Icon(Icons.play_arrow_rounded),
-              label: const Text('Iniciar treino de hoje'),
+              child: const Text('INICIAR TREINO'),
             ),
           ),
         ],
@@ -189,81 +170,57 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---- Variante B (tratamento): resumo compacto + barra fixa ----
-  Widget _variantBCompact(Workout workout) {
+  // ---- Variante B (tratamento): linha compacta + botão de largura total ----
+  Widget _variantBCompact(Workout workout, int streak) {
     return Column(
+      key: const Key('home_variant_b'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Card(
-          child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            leading: LabelPill(text: workout.label, color: AppTheme.lime),
-            title: Text(workout.name,
-                style: const TextStyle(fontWeight: FontWeight.w800)),
-            subtitle: Text('${workout.exerciseCount} exercícios · hoje'),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
+        Panel(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppTheme.lime,
-            borderRadius: BorderRadius.circular(18),
-          ),
           child: Row(
             children: [
-              const Icon(Icons.bolt, color: Color(0xFF10130A)),
-              const SizedBox(width: 8),
-              const Expanded(
-                child: Text(
-                  'Mantenha a sequência! Comece agora.',
-                  style: TextStyle(
-                    color: Color(0xFF10130A),
-                    fontWeight: FontWeight.w800,
-                  ),
+              LabelPill(text: workout.label),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      workout.name.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.heavyTitle.copyWith(fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    Text('SEQUÊNCIA: $streak DIAS', style: AppTheme.label),
+                  ],
                 ),
-              ),
-              TextButton(
-                key: const Key('start_workout_button'),
-                onPressed: () => _startWorkout(workout),
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF10130A),
-                  foregroundColor: AppTheme.lime,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Iniciar',
-                    style: TextStyle(fontWeight: FontWeight.w800)),
               ),
             ],
           ),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          key: const Key('start_workout_button'),
+          onPressed: () => _startWorkout(workout),
+          child: const Text('INICIAR TREINO'),
         ),
       ],
     );
   }
 
   Widget _noWorkout() {
-    return const Card(
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Text('Nenhum treino cadastrado ainda.'),
-      ),
+    return const Panel(
+      child: Text('NENHUM TREINO CADASTRADO.', style: AppTheme.label),
     );
   }
 
-  Widget _variantBadge(Variant variant) {
+  Widget _experimentTag(Variant variant) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppTheme.surfaceHigh,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          'Experimento A/B · você está na variante ${variant.label}',
-          style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
-        ),
+      child: Text(
+        'EXPERIMENTO A/B · VARIANTE ${variant.label}',
+        style: AppTheme.label.copyWith(color: AppTheme.textFaint),
       ),
     );
   }
