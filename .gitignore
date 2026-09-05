@@ -51,7 +51,6 @@ app.*.map.json
 **/Pods/
 
 # Web
-lib/generated_plugin_registrant.dart
 
 # Windows
 **/windows/flutter/generated_plugin_registrant.cc
