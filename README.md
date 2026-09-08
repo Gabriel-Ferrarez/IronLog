@@ -7,9 +7,9 @@ veja um **teste A/B real** rodando dentro do app.
 Projeto acadêmico que integra **Flutter**, **Teste A/B**, **TDD** e
 **CI/CD** (Integração Contínua + Entrega/Implantação Contínua) com GitHub.
 
-<!-- Troque OWNER/REPO pelo caminho do seu repositório no GitHub -->
-![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
-![CD](https://github.com/OWNER/REPO/actions/workflows/cd.yml/badge.svg)
+
+![CI](https://github.com/Gabriel-Ferrarez/IronLog/actions/workflows/ci.yml/badge.svg)
+![CD](https://github.com/Gabriel-Ferrarez/IronLog/actions/workflows/cd.yml/badge.svg)
 
 ---
 
