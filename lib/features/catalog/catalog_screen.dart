@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../domain/models/exercise.dart';
 import '../app_state.dart';
+import '../exercise_detail/exercise_detail_screen.dart';
 
 /// Catálogo de exercícios com busca por nome e filtro por grupo muscular.
 class CatalogScreen extends StatefulWidget {
@@ -91,34 +92,39 @@ class _ExerciseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: AppTheme.panel(),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  exercise.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: AppTheme.text,
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        ExerciseDetailRoute.build(exercise),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: AppTheme.panel(),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    exercise.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      color: AppTheme.text,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  '${exercise.muscleGroup.label} · ${exercise.equipment}'
-                      .toUpperCase(),
-                  style: AppTheme.label.copyWith(fontSize: 10),
-                ),
-              ],
+                  const SizedBox(height: 3),
+                  Text(
+                    '${exercise.muscleGroup.label} · ${exercise.equipment}'
+                        .toUpperCase(),
+                    style: AppTheme.label.copyWith(fontSize: 10),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.fitness_center, color: AppTheme.textFaint, size: 18),
-        ],
+            const Icon(Icons.fitness_center, color: AppTheme.textFaint, size: 18),
+          ],
+        ),
       ),
     );
   }
