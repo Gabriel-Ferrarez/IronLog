@@ -71,18 +71,18 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Image.asset(
-      'assets/images/ironlogo.png',
-      width: 220,
-      height: 80,
-      fit: BoxFit.contain,
-    ),
-    const SizedBox(height: 4),
-    Text('PAINEL DE TREINO', style: AppTheme.label),
-  ],
-),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/ironlogo.png',
+              width: 220,
+              height: 80,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 4),
+            Text('PAINEL DE TREINO', style: AppTheme.label),
+          ],
+        ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: AppTheme.panel(),

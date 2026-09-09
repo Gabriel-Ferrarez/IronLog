@@ -18,12 +18,12 @@ class ExerciseDetailViewModel extends ChangeNotifier {
 
   /// Dicas de execução.
   List<String> get tips => [
-    'Mantenha a forma correta durante todo o movimento',
-    'Controle o peso em todas as fases do exercício',
-    'Respire adequadamente: inspire na fase mais difícil',
-    'Aumente a intensidade gradualmente',
-    'Descanse adequadamente entre os treinos',
-  ];
+        'Mantenha a forma correta durante todo o movimento',
+        'Controle o peso em todas as fases do exercício',
+        'Respire adequadamente: inspire na fase mais difícil',
+        'Aumente a intensidade gradualmente',
+        'Descanse adequadamente entre os treinos',
+      ];
 
   /// Grupos musculares secundários afetados.
   List<String> get secondaryMuscles => _getSecondaryMuscles();

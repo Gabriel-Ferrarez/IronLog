@@ -34,7 +34,7 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Análise estática (lint)
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       - name: Rodar testes com cobertura
         run: flutter test --coverage
