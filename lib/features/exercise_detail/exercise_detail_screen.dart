@@ -109,7 +109,8 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                       children: [
                         for (int i = 0; i < vm.tips.length; i++) ...[
                           _buildTipItem(i + 1, vm.tips[i]),
-                          if (i < vm.tips.length - 1) const SizedBox(height: 12),
+                          if (i < vm.tips.length - 1)
+                            const SizedBox(height: 12),
                         ],
                       ],
                     ),
@@ -273,8 +274,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
 
 /// Rota de navegação para o detalhe do exercício.
 class ExerciseDetailRoute {
-  static Route<void> build(Exercise exercise) =>
-      MaterialPageRoute(
+  static Route<void> build(Exercise exercise) => MaterialPageRoute(
         builder: (_) => ExerciseDetailScreen(exercise: exercise),
       );
 }
